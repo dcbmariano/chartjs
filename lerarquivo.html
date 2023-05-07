@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+    <title>Lendo arquivos externos</title>
+    <meta charset="utf-8">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="estilo.css">
+</head>
+
+<body>
+
+    <div id="caixa">
+        <canvas id="meu-grafico1"></canvas>
+
+    </div>
+
+    <!-- SCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const url = "autores.csv";
+
+        fetch(url)
+            .then(resposta => resposta.text())
+            .then(data => {
+                data = data.split("\n")
+                data = data.map(i=>i.split(","))
+
+                let top10 = data.filter(i=>i[3] == '10')
+                console.log(top10)
+                
+                // local
+                const local = document.querySelector("#meu-grafico1");
+
+                let dados = {
+                    // rótulos
+                    labels: top10.map(i=>i[0]),
+                    // conjuntos de dados
+                    datasets: [
+                        {
+                            label: "Citações",
+                            data: top10.map(i=>i[1]),
+                            borderWidth: 1,
+                            borderColor: "#1E90FF",
+                            backgroundColor: "#1E90FF"
+                        },
+                        {
+                            label: "Artigos",
+                            data: top10.map(i=>i[2]),
+                            borderWidth: 1,
+                            borderColor: "red",
+                            backgroundColor: "red"
+                        }
+                    ],
+                };
+
+                new Chart(local, {
+                    type: "bar",
+                    data: dados,
+                    options: {
+                        scales: {
+                            y: {
+                                display: true,
+                                type: 'logarithmic',
+                            }
+                        }
+                    }
+                })
+            })
+    </script>
+</body>
+</html>
